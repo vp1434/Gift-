@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tumhare Liye Ek Tohfa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+  :root {
+    --rose: #e8416f;
+    --blush: #f7c5d0;
+    --gold: #d4a855;
+    --cream: #fdf6f0;
+    --deep: #1a0a10;
+    --ribbon: #c0385f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Floating FA icons background */
+  .hearts-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .icon-float {
+    position: absolute;
+    opacity: 0;
+    animation: floatIcon linear infinite;
+  }
+
+  @keyframes floatIcon {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.25; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Glow orbs */
+  .orb { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:0; }
+  .orb1 { width:400px; height:400px; background:rgba(232,65,111,.15);  top:-100px; left:-100px; }
+  .orb2 { width:300px; height:300px; background:rgba(212,168,85,.10);  bottom:-50px; right:-50px; }
+
+  .scene {
+    position: relative; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2rem;
+  }
+
+  /* Step dots */
+  .steps { display:flex; gap:1rem; align-items:center; margin-bottom:1rem; }
+  .step-dot {
+    width:10px; height:10px; border-radius:50%;
+    background:rgba(255,255,255,.2); transition:all .5s ease;
+    border:1px solid rgba(255,255,255,.3);
+  }
+  .step-dot.active { background:var(--gold); box-shadow:0 0 12px var(--gold); width:28px; border-radius:5px; }
+  .step-dot.done   { background:var(--rose); }
+
+  /* Title */
+  .title {
+    font-family:'Dancing Script',cursive;
+    color:var(--gold);
+    font-size:clamp(1.4rem,4vw,2.1rem);
+    text-align:center;
+    text-shadow:0 0 30px rgba(212,168,85,.5);
+    letter-spacing:1px;
+    min-height:3rem;
+    display:flex; align-items:center; gap:.6rem;
+  }
+
+  /* Subtitle */
+  .subtitle {
+    color:rgba(247,197,208,.7);
+    font-size:.85rem; letter-spacing:1.5px;
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:.5rem;
+  }
+
+  /* ── STEP 1 Gift Box ── */
+  .gift-wrap {
+    position:relative; width:200px; height:200px;
+    cursor:pointer; transition:transform .3s ease;
+  }
+  .gift-wrap:hover { transform:scale(1.05) rotate(-1deg); }
+  .gift-wrap:hover .hint { opacity:1; }
+
+  .box-bottom {
+    position:absolute; bottom:0;
+    width:200px; height:140px;
+    background:linear-gradient(135deg,#e8416f 0%,#c0385f 100%);
+    border-radius:4px;
+    box-shadow:0 20px 60px rgba(232,65,111,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    animation:pulseGlow 2s ease-in-out infinite;
+  }
+  .box-ribbon-v {
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:24px; height:140px;
+    background:linear-gradient(to right,#8b1a35,var(--gold),#8b1a35);
+    border-radius:2px;
+  }
+  .box-lid {
+    position:absolute; top:0; width:200px; height:68px;
+    background:linear-gradient(135deg,#f0507a 0%,#d0405e 100%);
+    border-radius:4px; box-shadow:0 -4px 20px rgba(0,0,0,.3);
+    transform-origin:top center;
+    transition:transform .8s cubic-bezier(.34,1.56,.64,1);
+    z-index:5;
+  }
+  .box-ribbon-lid {
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:24px; height:68px;
+    background:linear-gradient(to right,#8b1a35,var(--gold),#8b1a35);
+  }
+  .bow {
+    position:absolute; top:-28px; left:50%; transform:translateX(-50%);
+    z-index:6; width:80px; height:40px;
+  }
+  .bow-left,.bow-right {
+    position:absolute; width:36px; height:28px;
+    border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    background:radial-gradient(ellipse,var(--gold) 0%,#a8762a 100%);
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+  .bow-left  { left:0;  transform:rotate(-30deg); transform-origin:right center; }
+  .bow-right { right:0; transform:rotate(30deg);  transform-origin:left center; }
+  .bow-center {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:18px; height:18px; background:var(--gold); border-radius:50%;
+    box-shadow:0 0 10px rgba(212,168,85,.8); z-index:7;
+    display:flex; align-items:center; justify-content:center;
+    color:rgba(255,255,255,.6); font-size:.5rem;
+  }
+  /* Ghost FA gift icon on box body */
+  .box-fa-icon {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-15%);
+    font-size:2.8rem; color:rgba(255,255,255,.18);
+    z-index:2; pointer-events:none;
+  }
+
+  .hint {
+    position:absolute; bottom:-40px; left:50%; transform:translateX(-50%);
+    color:var(--blush); font-size:.8rem; white-space:nowrap;
+    opacity:0; transition:opacity .3s; letter-spacing:1px;
+    display:flex; align-items:center; gap:.4rem;
+  }
+
+  @keyframes pulseGlow {
+    0%,100% { box-shadow:0 20px 60px rgba(232,65,111,.4); }
+    50%      { box-shadow:0 20px 80px rgba(232,65,111,.7), 0 0 40px rgba(212,168,85,.3); }
+  }
+
+  /* ── STEP 2 Envelope ── */
+  .envelope-scene { display:none; flex-direction:column; align-items:center; gap:2rem; }
+
+  .envelope {
+    position:relative; width:240px; height:170px;
+    cursor:pointer; transition:transform .3s;
+  }
+  .envelope:hover { transform:translateY(-5px); }
+
+  .env-body {
+    width:100%; height:100%;
+    background:linear-gradient(160deg,#fdf6f0 0%,#f5e6d5 100%);
+    border-radius:6px;
+    box-shadow:0 15px 50px rgba(0,0,0,.4), 0 0 0 1px rgba(212,168,85,.3);
+    position:relative; overflow:hidden;
+  }
+  .env-body::after {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(232,65,111,.04) 8px,rgba(232,65,111,.04) 9px);
+  }
+  /* Watermark envelope icon inside body */
+  .env-body-icon {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    color:rgba(200,140,100,.25); font-size:2rem; pointer-events:none;
+  }
+  .env-lines {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    display:flex; flex-direction:column; gap:7px; width:110px; margin-top:14px;
+  }
+  .env-line { height:2px; background:rgba(200,140,100,.28); border-radius:1px; width:100%; }
+  .env-line:nth-child(2) { width:78%; }
+  .env-line:nth-child(3) { width:55%; }
+
+  .env-flap {
+    position:absolute; top:0; left:0; right:0; height:0;
+    border-left:120px solid transparent;
+    border-right:120px solid transparent;
+    border-top:90px solid #e8c4a0;
+    transform-origin:top;
+    transition:transform .8s cubic-bezier(.34,1.1,.64,1);
+    z-index:4; filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));
+  }
+  /* Wax seal with FA heart */
+  .env-seal {
+    position:absolute; top:38px; left:50%; transform:translateX(-50%);
+    width:42px; height:42px;
+    background:radial-gradient(circle,var(--rose) 0%,var(--ribbon) 100%);
+    border-radius:50%; z-index:5;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 20px rgba(232,65,111,.6);
+    transition:transform .3s;
+    color:#fff; font-size:1.1rem;
+  }
+  .envelope:hover .env-seal { transform:translateX(-50%) scale(1.1); }
+
+  /* ── STEP 3 Love Letter ── */
+  .letter-scene { display:none; flex-direction:column; align-items:center; gap:1.5rem; max-width:420px; }
+
+  .letter-card {
+    background:linear-gradient(160deg,#fff9f5,#fef0e8);
+    border-radius:12px; padding:2.5rem;
+    box-shadow:0 20px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(212,168,85,.3);
+    position:relative; text-align:center;
+    border:1px solid rgba(212,168,85,.2);
+    width:340px; max-width:90vw;
+  }
+  .letter-card::before {
+    content:''; position:absolute; inset:8px;
+    border:1px dashed rgba(232,65,111,.2);
+    border-radius:8px; pointer-events:none;
+  }
+  /* Corner FA icons */
+  .corner-fa {
+    position:absolute; color:var(--rose); opacity:.35; font-size:1rem;
+  }
+  .corner-fa:nth-child(1) { top:14px; left:16px; }
+  .corner-fa:nth-child(2) { top:14px; right:16px; }
+  .corner-fa:nth-child(3) { bottom:14px; left:16px; }
+  .corner-fa:nth-child(4) { bottom:14px; right:16px; }
+
+  .letter-big-icon {
+    font-size:3rem; color:var(--rose);
+    display:block; margin-bottom:1rem;
+    animation:heartbeat 1.5s ease-in-out infinite;
+    filter:drop-shadow(0 0 14px rgba(232,65,111,.55));
+  }
+  @keyframes heartbeat {
+    0%,100% { transform:scale(1); }
+    50%      { transform:scale(1.18); }
+  }
+
+  .letter-greeting { font-family:'Dancing Script',cursive; color:var(--rose); font-size:1.6rem; margin-bottom:1rem; }
+  .letter-text {
+    font-family:'Playfair Display',serif; color:#5a3025;
+    font-size:1rem; line-height:1.85; margin-bottom:1.5rem; font-style:italic;
+  }
+  .letter-text .fa-inline { font-size:.85em; vertical-align:middle; margin:0 3px; }
+  .letter-sign {
+    font-family:'Dancing Script',cursive; color:var(--gold); font-size:1.4rem;
+    display:flex; align-items:center; justify-content:center; gap:.5rem;
+  }
+
+  /* Buttons */
+  .btn {
+    padding:.8rem 2.2rem; border:none; border-radius:50px;
+    font-family:'Lato',sans-serif; font-size:.88rem; letter-spacing:1.5px;
+    text-transform:uppercase; cursor:pointer; transition:all .3s ease;
+    display:inline-flex; align-items:center; gap:.6rem;
+  }
+  .btn-primary {
+    background:linear-gradient(135deg,var(--rose),var(--ribbon));
+    color:#fff; box-shadow:0 8px 30px rgba(232,65,111,.4);
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(232,65,111,.6); }
+
+  .btn-gold {
+    background:linear-gradient(135deg,var(--gold),#b8922a);
+    color:#fff; box-shadow:0 8px 30px rgba(212,168,85,.4);
+  }
+  .btn-gold:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(212,168,85,.6); }
+
+  .restart-btn {
+    background:transparent; border:1px solid rgba(255,255,255,.2);
+    color:rgba(255,255,255,.5); padding:.5rem 1.5rem; border-radius:50px;
+    font-size:.75rem; cursor:pointer; letter-spacing:1px; transition:all .3s;
+    font-family:'Lato',sans-serif;
+    display:inline-flex; align-items:center; gap:.5rem;
+  }
+  .restart-btn:hover { border-color:rgba(255,255,255,.4); color:rgba(255,255,255,.8); }
+
+  /* Confetti */
+  .confetti-piece {
+    position:fixed; pointer-events:none; z-index:100;
+    animation:confettiFall linear forwards; border-radius:2px;
+  }
+  @keyframes confettiFall {
+    0%   { transform:translateY(-20px) rotate(0deg);   opacity:1; }
+    100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .fade-in { animation:fadeInUp .6s ease forwards; }
+
+  /* Sparkle FA icons */
+  .sparkle-fa {
+    position:fixed; pointer-events:none; z-index:99;
+    animation:sparkleAnim 1s ease forwards;
+  }
+  @keyframes sparkleAnim {
+    0%   { transform:scale(0) rotate(0deg);    opacity:1; }
+    50%  { transform:scale(1.6) rotate(180deg); opacity:1; }
+    100% { transform:scale(0) rotate(360deg);  opacity:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="scene">
+
+  <div class="steps">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+  </div>
+
+  <!-- ═══ STEP 1 ═══ -->
+  <div id="step1" style="display:flex;flex-direction:column;align-items:center;gap:2rem;">
+    <div class="title">
+      <i class="fa-solid fa-star" style="color:var(--gold);font-size:.75em;"></i>
+      Tumhare liye kuch khaas hai
+    </div>
+    <div class="subtitle">
+      <i class="fa-solid fa-gift" style="color:var(--gold);"></i>
+      Ek chota sa tohfa dil se
+    </div>
+
+    <div class="gift-wrap" onclick="openBox()">
+      <div class="box-lid" id="lid">
+        <div class="box-ribbon-lid"></div>
+        <div class="bow">
+          <div class="bow-left"></div>
+          <div class="bow-right"></div>
+          <div class="bow-center"><i class="fa-solid fa-star"></i></div>
+        </div>
+      </div>
+      <div class="box-bottom">
+        <div class="box-ribbon-v"></div>
+        <i class="fa-solid fa-gift box-fa-icon"></i>
+      </div>
+      <div class="hint">
+        <i class="fa-solid fa-hand-pointer" style="color:var(--gold);"></i>
+        Click karke kholein!
+      </div>
+    </div>
+
+    <div style="height:44px"></div>
+    <p class="subtitle" style="animation:heartbeat 1.6s infinite;">
+      <i class="fa-solid fa-angles-down" style="color:var(--gold);"></i>
+      Gift box par click karein
+    </p>
+  </div>
+
+  <!-- ═══ STEP 2 ═══ -->
+  <div id="step2" class="envelope-scene" style="display:none;">
+    <div class="title">
+      <i class="fa-solid fa-envelope-open-text" style="color:var(--rose);font-size:.8em;"></i>
+      Oh! Ek khat hai tumhare liye
+    </div>
+
+    <div class="envelope" onclick="openEnvelope()">
+      <div class="env-body">
+        <i class="fa-regular fa-envelope env-body-icon"></i>
+        <div class="env-lines">
+          <div class="env-line"></div>
+          <div class="env-line"></div>
+          <div class="env-line"></div>
+        </div>
+      </div>
+      <div class="env-flap" id="envFlap"></div>
+      <div class="env-seal" id="envSeal">
+        <i class="fa-solid fa-heart"></i>
+      </div>
+    </div>
+
+    <button class="btn btn-primary fade-in" onclick="openEnvelope()" style="margin-top:.5rem;">
+      <i class="fa-solid fa-envelope-open"></i>
+      Khat Kholein
+    </button>
+  </div>
+
+  <!-- ═══ STEP 3 ═══ -->
+  <div id="step3" class="letter-scene" style="display:none;">
+    <div class="title">
+      <i class="fa-solid fa-heart" style="color:var(--rose);font-size:.8em;animation:heartbeat 1.2s infinite;"></i>
+      Dil ki baat...
+    </div>
+
+    <div class="letter-card fade-in">
+      <i class="fa-solid fa-heart corner-fa"></i>
+      <i class="fa-solid fa-heart corner-fa"></i>
+      <i class="fa-solid fa-heart corner-fa"></i>
+      <i class="fa-solid fa-heart corner-fa"></i>
+
+      <i class="fa-solid fa-heart letter-big-icon"></i>
+
+      <div class="letter-greeting">Meri Pyaari Jaan,</div>
+
+      <p class="letter-text">
+        Tum meri zindagi ki sabse khoobsurat khushi ho.<br><br>
+        Har din tumhare saath ek naya rang lekar aata hai —<br>
+        aur main chahta hoon ke har mushkil mein tum jaano...<br><br>
+        <strong style="font-style:normal;color:var(--rose);">
+          Tum mere liye sab kuch ho.
+          <i class="fa-solid fa-heart fa-inline" style="color:var(--rose);"></i>
+        </strong><br><br>
+        Yeh chhota sa tohfa sirf ek yaad dilaane ke liye hai —<br>
+        ki main tumse bahut pyaar karta hoon!
+        <i class="fa-solid fa-rose fa-inline" style="color:var(--rose);"></i>
+      </p>
+
+      <div class="letter-sign">
+        <span>— Tumhara apna</span>
+        <i class="fa-solid fa-hands-holding-heart" style="color:var(--rose);font-size:1.1em;"></i>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem;">
+      <button class="btn btn-gold" onclick="celebrate()">
+        <i class="fa-solid fa-champagne-glasses"></i> Celebrate!
+      </button>
+      <button class="restart-btn" onclick="restart()">
+        <i class="fa-solid fa-rotate-left"></i> Phir se
+      </button>
+    </div>
+  </div>
+
+</div><!-- /scene -->
+
+<script>
+  // ── Floating FA icon background ──
+  const floatIcons   = ['fa-heart','fa-heart','fa-heart','fa-star','fa-heart-pulse','fa-music','fa-star-of-life'];
+  const floatColors  = ['#e8416f','#d4a855','#f7c5d0','#ff9ab5','#ffcc70'];
+  const bg = document.getElementById('heartsBg');
+  for (let i = 0; i < 22; i++) {
+    const el = document.createElement('i');
+    el.className = `fa-solid ${floatIcons[i % floatIcons.length]} icon-float`;
+    el.style.left              = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (9 + Math.random() * 12) + 's';
+    el.style.animationDelay    = (Math.random() * 16) + 's';
+    el.style.fontSize          = (.8 + Math.random() * 1.1) + 'rem';
+    el.style.color             = floatColors[Math.floor(Math.random() * floatColors.length)];
+    bg.appendChild(el);
+  }
+
+  // ── FA sparkle burst ──
+  const sparkIcons  = ['fa-star','fa-star-of-life','fa-bolt','fa-certificate'];
+  const sparkColors = ['#e8416f','#d4a855','#f7c5d0','#ffffff','#ffcc70'];
+  function spawnSparkles(count = 8) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const s = document.createElement('i');
+        s.className = `fa-solid ${sparkIcons[Math.floor(Math.random() * sparkIcons.length)]} sparkle-fa`;
+        s.style.left     = (15 + Math.random() * 70) + 'vw';
+        s.style.top      = (15 + Math.random() * 70) + 'vh';
+        s.style.color    = sparkColors[Math.floor(Math.random() * sparkColors.length)];
+        s.style.fontSize = (1.2 + Math.random() * 1.2) + 'rem';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 1000);
+      }, i * 80);
+    }
+  }
+
+  // ── Confetti ──
+  const confColors = ['#e8416f','#d4a855','#f7c5d0','#fff','#ff6b9d','#ffd700'];
+  function confettiBurst() {
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.background        = confColors[Math.floor(Math.random() * confColors.length)];
+        c.style.left              = Math.random() * 100 + 'vw';
+        c.style.top               = '-10px';
+        c.style.width             = (6 + Math.random() * 8) + 'px';
+        c.style.height            = (6 + Math.random() * 8) + 'px';
+        c.style.borderRadius      = Math.random() > .5 ? '50%' : '2px';
+        c.style.animationDuration = (2 + Math.random() * 2) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }, i * 30);
+    }
+  }
+
+  // ── Dots ──
+  function updateDots(step) {
+    ['dot1','dot2','dot3'].forEach((id, i) => {
+      const d = document.getElementById(id);
+      d.classList.remove('active','done');
+      if (i+1 < step)      d.classList.add('done');
+      else if (i+1 === step) d.classList.add('active');
+    });
+  }
+
+  // ── Step 1 → 2 ──
+  function openBox() {
+    document.getElementById('lid').style.transform = 'rotateX(-110deg)';
+    spawnSparkles(7);
+    setTimeout(() => {
+      document.getElementById('step1').style.display = 'none';
+      const s2 = document.getElementById('step2');
+      s2.style.display = 'flex';
+      s2.classList.add('fade-in');
+      updateDots(2);
+    }, 820);
+  }
+
+  // ── Step 2 → 3 ──
+  function openEnvelope() {
+    document.getElementById('envFlap').style.transform = 'rotateX(-160deg)';
+    document.getElementById('envSeal').style.transform = 'translateX(-50%) scale(0)';
+    spawnSparkles(11);
+    setTimeout(() => {
+      document.getElementById('step2').style.display = 'none';
+      const s3 = document.getElementById('step3');
+      s3.style.display = 'flex';
+      s3.classList.add('fade-in');
+      updateDots(3);
+      confettiBurst();
+    }, 720);
+  }
+
+  // ── Celebrate ──
+  function celebrate() {
+    confettiBurst();
+    spawnSparkles(16);
+    setTimeout(confettiBurst, 500);
+  }
+
+  // ── Restart ──
+  function restart() {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step1').style.display = 'flex';
+
+    const lid = document.getElementById('lid');
+    lid.style.transition = 'none';
+    lid.style.transform  = '';
+    setTimeout(() => lid.style.transition = 'transform .8s cubic-bezier(.34,1.56,.64,1)', 50);
+
+    document.getElementById('envFlap').style.transform = '';
+    document.getElementById('envSeal').style.transform = 'translateX(-50%) scale(1)';
+    updateDots(1);
+  }
+</script>
+</body>
+</html>
